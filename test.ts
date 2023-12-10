@@ -1,50 +1,47 @@
-// main.ts
-
 import { DiscordEmbed, EmbedMessage } from './embed';
 
-// Replace 'YOUR_DISCORD_WEBHOOK_URL' with your actual Discord Webhook URL
-const webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL';
+const webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL'; // Discord Webhook URL'sini buraya ekleyin
 
 const embed = new DiscordEmbed(webhookUrl);
 
-// Süre sonra mesaj gönderme
-setTimeout(async () => {
-  await embed.sendEmbed({
-    title: 'Scheduled Embed',
-    description: 'This message was sent after a delay.',
-    color: 0x0000ff, // Blue color
-  });
-}, 5000); // 5 seconds delay
+// Örnek 1: Basit bir embed gönderme
+const embedOptions1 = {
+  title: 'Başlık 1',
+  description: 'Açıklama 1',
+  color: 0xFF0000, // Kırmızı renk
+  fields: [
+    { name: 'Alan 1', value: 'Değer 1' },
+    { name: 'Alan 2', value: 'Değer 2' },
+  ],
+};
 
-// Döngü ile mesaj gönderme
-const loopCount = 3;
-for (let i = 0; i < loopCount; i++) {
-  await embed.sendEmbed({
-    title: 'Looped Embed',
-    description: `This is message number ${i + 1} in the loop.`,
-    color: 0xff00ff, // Magenta color
-  });
-}
+embed.sendEmbed(embedOptions1);
 
-// Aynı mesajı birden çok kez gönderme
-const repeatCount = 4;
-await embed.sendRepeatedEmbed(
-  {
-    title: 'Repeated Embed',
-    description: 'This is the same message sent multiple times.',
-    color: 0xffff00, // Yellow color
-  },
-  repeatCount
-);
+// Örnek 2: Birden fazla embed gönderme
+const embedOptions2 = new EmbedMessage('Başlık 2', 'Açıklama 2', 0x00FF00, [
+  { name: 'Alan 3', value: 'Değer 3' },
+  { name: 'Alan 4', value: 'Değer 4' },
+]);
 
-// Çok detaylı mesaj gönderme
-const detailedMessage = new EmbedMessage(
-  'Detailed Embed',
-  'This is a detailed message with specific options.',
-  0x008000, // Green color
-  [
-    { name: 'Field 1', value: 'Value 1' },
-    { name: 'Field 2', value: 'Value 2' },
-  ]
-);
-await embed.sendDetailedEmbed(detailedMessage);
+const embedOptions3 = new EmbedMessage('Başlık 3', 'Açıklama 3', 0x0000FF, [
+  { name: 'Alan 5', value: 'Değer 5' },
+  { name: 'Alan 6', value: 'Değer 6' },
+]);
+
+embed.sendMultipleEmbeds([embedOptions2, embedOptions3]);
+
+// Örnek 3: Tekrarlanan embed gönderme
+const embedOptions4 = new EmbedMessage('Başlık 4', 'Açıklama 4', 0xFFFF00, [
+  { name: 'Alan 7', value: 'Değer 7' },
+  { name: 'Alan 8', value: 'Değer 8' },
+]);
+
+embed.sendRepeatedEmbed(embedOptions4, 3);
+
+// Örnek 4: Detaylı embed gönderme
+const detailedEmbed = new EmbedMessage('Detaylı Başlık', 'Detaylı Açıklama', 0x0088CC, [
+  { name: 'Detay Alanı 1', value: 'Detay Değeri 1' },
+  { name: 'Detay Alanı 2', value: 'Detay Değeri 2' },
+]);
+
+embed.sendDetailedEmbed(detailedEmbed);
