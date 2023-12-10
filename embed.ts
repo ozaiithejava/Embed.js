@@ -1,6 +1,6 @@
 // embed.ts
 
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 interface EmbedField {
   name: string;
@@ -25,8 +25,14 @@ export class DiscordEmbed {
     try {
       await axios.post(this.webhookUrl, payload);
     } catch (error) {
-      console.error('Error sending embed:', error.message);
-      throw new Error('Error sending embed.');
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+        console.error(`Error sending embed: ${axiosError.response?.statusText}`);
+        throw new Error('Error sending embed.');
+      } else {
+        console.error('Unknown error sending embed:', error.message);
+        throw new Error('Unknown error sending embed.');
+      }
     }
   }
 
@@ -36,7 +42,7 @@ export class DiscordEmbed {
         {
           title: embedOptions.title || '',
           description: embedOptions.description || '',
-          color: embedOptions.color || 0x00ff00,
+          color: embedOptions.color || 0x00FF00, // Renk isimlerini tercih edebilirsiniz: Örneğin: 0x00FF00 => 'Green'
           fields: embedOptions.fields || [],
         },
       ],
@@ -50,7 +56,7 @@ export class DiscordEmbed {
       embeds: embedOptionsArray.map((options) => ({
         title: options.title || '',
         description: options.description || '',
-        color: options.color || 0x00ff00,
+        color: options.color || 0x00FF00,
         fields: options.fields || [],
       })),
     };
@@ -64,15 +70,14 @@ export class DiscordEmbed {
         {
           title: embedOptions.title || '',
           description: embedOptions.description || '',
-          color: embedOptions.color || 0x00ff00,
+          color: embedOptions.color || 0x00FF00,
           fields: embedOptions.fields || [],
         },
       ],
     }));
 
-    for (const payload of payloadArray) {
-      await this.sendPayload(payload);
-    }
+    // İstekleri paralel olarak gönder
+    await Promise.all(payloadArray.map(payload => this.sendPayload(payload)));
   }
 
   public async sendDetailedEmbed(embedMessage: EmbedMessage): Promise<void> {
@@ -81,7 +86,7 @@ export class DiscordEmbed {
         {
           title: embedMessage.title || '',
           description: embedMessage.description || '',
-          color: embedMessage.color || 0x00ff00,
+          color: embedMessage.color || 0x00FF00,
           fields: embedMessage.fields || [],
         },
       ],
