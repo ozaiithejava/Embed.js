@@ -2,7 +2,7 @@
 embed.js for discord
 
 ## Kullanım
-```Java
+```TypeScript
 
 import { DiscordEmbed, EmbedMessage } from 'discord-embed-module';
 
